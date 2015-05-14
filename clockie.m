@@ -1,8 +1,8 @@
 % Author: Phyo Thiha
 % Date: 5/13/2015
 % Description:
-% MATLAB script to draw a smiley face that represents the current time
-% on the clock.
+% MATLAB program to draw a smiley face that represents the current time
+% on the clock (still in draft stage).
 % Smiley's right eye represents the hour (in the interval of 12)
 % and the left eye represents the minute hand. The width of the smile
 % (semicircle) represents the whole 24 hour period with the label 
