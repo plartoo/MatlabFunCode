@@ -10,16 +10,21 @@
 % Note: this script is dependent on the file below:
 % - 'draw_clock.m'
 
+clearvars;  % start from fresh
+close all;
+
 profile on
-hours = 1:13;
-minutes = 0:10;
+hours = 10:14;
+minutes = 0:59;
+
 for i = 1:numel(hours)
     for j = 1:numel(minutes)
         draw_clock(hours(i), minutes(j));
-        pause(0.03);
+        pause(0.001);
         refresh;
     end
 end
+
 profile viewer
-p = profile('info');
-profsave(p,'profile_results')
+%p = profile('info');
+%profsave(p,'profile_results')

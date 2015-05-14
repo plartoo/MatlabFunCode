@@ -8,10 +8,10 @@
 % Smiley's face represents the whole 24 hour period with 
 % the label indicating 'AM' or 'PM' at the tip of the smile.
 % 
-% To see the drawing for the current time, type:
+% To run, type:
 % >> draw_clock
 % 
-% OR pass the current time as hour and minute parameters for the 
+% OR pass the current time as hour and minute parameters of the 
 % 'draw_clock' function. For example,
 % >> cur_time = clock; % get current time
 % >> draw_clock(cur_time(4), cur_time(5));
@@ -31,7 +31,7 @@
 % right for this project's use case, so I modified it a bit.)
 % http://www.barrington220.org/cms/lib2/IL01001296/Centricity/Domain/2154/Clock%20Parametrics%20Activity.pdf
 
-function draw_clock(cur_hour, cur_minute)
+function draw_fast_clock(cur_hour, cur_minute)
 
     if nargin < 1
         cur_time = clock;
@@ -58,20 +58,23 @@ function draw_clock(cur_hour, cur_minute)
     draw_right_iris(cur_hour);
     draw_left_iris(cur_minute);
     
+    %text(face_size/3, 1, 'Current Time: ' 
 end
 
 % Set figure properties
 function set_figure()
     fig_name = 'Smiley Clock';
     
-    %if isempty(findobj('Name', fig_name)) %% this is SLOW
-    if ~ishandle(1) % reuse figure
-        figure('Name', fig_name)
-        axis off;
-        daspect([1 1 1]);
+    % if figure is already drawn, reuse it
+    if ~exist('fig', 'var')
+    %if ~ishandle(1)
+        global fig;
+        fig = figure('Name', fig_name);
+        hold on;
     end
     
-    hold on;
+    axis off;
+    daspect([1 1 1]);
 end
 
 % Define colors
@@ -156,8 +159,11 @@ end
 % This approach requires the center point coordinates of 
 % the circle as well as the raidus and (optional) color parameters.
 function draw_filled_circle(x, y, radius, color)
+     %global fig;
+%     hold on;
     angle = 2 * pi/1000 * (1:1000);
-    fill((x+radius*cos(angle)), (y+radius*sin(angle)), color);
+    fig = fill((x+radius*cos(angle)), (y+radius*sin(angle)), color);
+    hold on;
 end
 
 % This is another way to draw a filled circle in MATLAB.
@@ -166,11 +172,16 @@ end
 % of the circle instead of the center.
 % Ref.: http://www.mathworks.com/help/matlab/ref/rectangle.html
 function draw_circle(x, y, size, color, thickness)
+    %global fig;
+            %'Parent', fig,...
+%    hold on;
+    
     pos = get_position(x, y, size);
-    rectangle('Position',pos,...
+    fig = rectangle('Position',pos,...
             'Curvature',[1 1],...
             'FaceColor',color,...
             'linewidth', thickness);
+    hold on;
 end
 
 % Returns position vector of form [x,y,w,h] to be
@@ -188,6 +199,7 @@ end
 function draw_face()
     global dark_yellow;
     global face_size;
+
     face_x = 0;
     face_y = 0;
     face_thickness = 4;
@@ -203,7 +215,7 @@ function draw_eyes()
     global soft_white;
     global eye_size eye_y;
     global reye_x leye_x eye_thickness;
-
+    
     draw_circle(reye_x, eye_y, eye_size, soft_white, eye_thickness);
     draw_circle(leye_x, eye_y, eye_size, soft_white, eye_thickness);
 end
@@ -236,10 +248,16 @@ end
 % For example, at 12:00 (midday), the smile should be half way 
 % (12/24 = 1/2) of the full smile (semicircle). At 20:00 (8 PM), 
 % the smile should be (20/24 = 5/6th) of the full smile.
-function draw_semicircle(cur_hour, smile_x, smile_y, smile_radius, smile_color,...
-    smile_thickness)
+function draw_semicircle(cur_hour, smile_x, smile_y, smile_radius,...
+                        smile_color,smile_thickness)
+
+    %global fig;
+%     hold on;
+    
     [sx, sy] = get_smile_path(cur_hour, smile_x, smile_y, smile_radius);
-    plot(sx, sy, 'Color' , smile_color, 'LineWidth', smile_thickness);
+    fig = plot(sx, sy, 'Color' , smile_color,...
+            'LineWidth', smile_thickness);
+    hold on;
 end
 
 % Returns the path for drawing the smile.
